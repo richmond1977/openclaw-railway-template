@@ -20,4 +20,19 @@ if os.path.exists(config_path):
         json.dump(config, f, indent=2)
     print('plugins.allow set to [line]')
 " || true
+# Install business admin skills
+SKILL_DIR="${OPENCLAW_WORKSPACE_DIR:-/data/workspace}/skills"
+mkdir -p "$SKILL_DIR"
+gosu openclaw sh -c "
+  cd '$SKILL_DIR' && \
+  npx clawhub@latest install imap-smtp-email && \
+  npx clawhub@latest install caldav-calendar && \
+  npx clawhub@latest install trello && \
+  npx clawhub@latest install word-docx && \
+  npx clawhub@latest install ontology && \
+  npx clawhub@latest install agent-browser && \
+  npx clawhub@latest install api-gateway && \
+  npx clawhub@latest install obsidian && \
+  npx clawhub@latest install self-improving-proactive-agent
+" || echo "Some skills failed to install, continuing..."
 exec gosu openclaw node src/server.js
